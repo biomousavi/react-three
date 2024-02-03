@@ -1,41 +1,12 @@
-import { useState } from 'react';
-import viteLogo from '../public/vite.svg';
+import AppCanvas from './Canvas.tsx';
 
 function App() {
-  const [count, setCount] = useState(0);
-
   return (
-    <>
-      <div className="bg-red-400">
-        <a href="https://vitejs.dev" target="_blank" rel="noreferrer">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank" rel="noreferrer">
-          asdas
-        </a>
+    <main className="select-none bg-gray-100">
+      <div className="min-h-screen flex flex-col container mx-auto justify-center items-center ">
+        <AppCanvas />
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button
-          type="submit"
-          onClick={() => setCount((previousCount) => previousCount + 1)}
-        >
-          count is
-          {' '}
-          {count}
-        </button>
-        <p>
-          Edit
-          {' '}
-          <code>src/App.tsx</code>
-          {' '}
-          and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    </main>
   );
 }
 
