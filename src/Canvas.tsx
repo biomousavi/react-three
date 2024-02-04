@@ -1,3 +1,5 @@
+import React, { useRef } from 'react';
+
 import {
   AccumulativeShadows,
   Center,
@@ -9,24 +11,24 @@ import {
 import { Canvas } from '@react-three/fiber';
 import { Vector3 } from 'three';
 
-const defaultPosition = new Vector3(0, 0, 2);
+const defaultPosition = new Vector3(0, 0, 3);
 export default function AppCanvas({ position = defaultPosition, fov = 35 }) {
   return (
     <Canvas
       shadows
       style={{ height: '100vh' }}
-      flat
-      linear
       eventSource={document.getElementById('root')!}
       eventPrefix="client"
       camera={{ position, fov }}
     >
       <ambientLight intensity={0.5} />
       <Environment preset="city" />
-      <Center>
-        <Shirt />
-        <Backdrop />
-      </Center>
+      <CameraRig>
+        <Center>
+          <Shirt />
+          <Backdrop />
+        </Center>
+      </CameraRig>
       <OrbitControls />
     </Canvas>
   );
@@ -36,7 +38,7 @@ function Shirt(props: any) {
   const { nodes, materials } = useGLTF('/t_shirt.glb');
   return (
     <group {...props} dispose={null}>
-      <group rotation={[-1.661, 0.003, 0]}>
+      <group rotation={[-1.661, 0.003, 0]} position={[0, -0.3, 0]}>
         <group rotation={[Math.PI / 2, 0, 0]}>
           <mesh
             castShadow
@@ -111,7 +113,7 @@ function Backdrop() {
     <AccumulativeShadows
       temporal
       frames={60}
-      alphaTest={0.35}
+      alphaTest={0.25}
       scale={10}
       rotation={[Math.PI / 2, 0, 0]}
       position={[0, 1, -0.4]}
@@ -132,4 +134,14 @@ function Backdrop() {
       />
     </AccumulativeShadows>
   );
+}
+
+function CameraRig({ children }: { children: React.ReactNode }) {
+  const groupRef = useRef(null);
+
+  // useFrame((state, delta) => {
+  //   // console.log(state);
+  // });
+
+  return <group ref={groupRef}>{children}</group>;
 }
