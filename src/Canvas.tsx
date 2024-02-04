@@ -1,15 +1,18 @@
 import React, { useRef } from 'react';
 
+// course first and second page text
+// course detail youtube
 import {
   AccumulativeShadows,
   Center,
   Environment,
-  OrbitControls,
+  // OrbitControls,
   RandomizedLight,
   useGLTF,
 } from '@react-three/drei';
-import { Canvas } from '@react-three/fiber';
-import { Vector3 } from 'three';
+import { Canvas, useFrame } from '@react-three/fiber';
+import { easing } from 'maath';
+import { Group, Object3DEventMap, Vector3 } from 'three';
 
 const defaultPosition = new Vector3(0, 0, 3);
 export default function AppCanvas({ position = defaultPosition, fov = 35 }) {
@@ -29,7 +32,9 @@ export default function AppCanvas({ position = defaultPosition, fov = 35 }) {
           <Backdrop />
         </Center>
       </CameraRig>
-      <OrbitControls />
+
+      {/* adding mouse drag controll */}
+      {/* <OrbitControls /> */}
     </Canvas>
   );
 }
@@ -43,61 +48,61 @@ function Shirt(props: any) {
           <mesh
             castShadow
             receiveShadow
-            geometry={nodes.Object_6.geometry}
+            geometry={(nodes.Object_6 as any).geometry}
             material={materials.Body_FRONT_2664}
           />
           <mesh
             castShadow
             receiveShadow
-            geometry={nodes.Object_8.geometry}
+            geometry={(nodes.Object_8 as any).geometry}
             material={materials.Body_FRONT_2664}
           />
           <mesh
             castShadow
             receiveShadow
-            geometry={nodes.Object_10.geometry}
+            geometry={(nodes.Object_10 as any).geometry}
             material={materials.Body_FRONT_2664}
           />
           <mesh
             castShadow
             receiveShadow
-            geometry={nodes.Object_11.geometry}
+            geometry={(nodes.Object_11 as any).geometry}
             material={materials.Body_FRONT_2664}
           />
           <mesh
             castShadow
             receiveShadow
-            geometry={nodes.Object_12.geometry}
+            geometry={(nodes.Object_12 as any).geometry}
             material={materials.Body_FRONT_2664}
           />
           <mesh
             castShadow
             receiveShadow
-            geometry={nodes.Object_14.geometry}
+            geometry={(nodes.Object_14 as any).geometry}
             material={materials.Body_FRONT_2664}
           />
           <mesh
             castShadow
             receiveShadow
-            geometry={nodes.Object_15.geometry}
+            geometry={(nodes.Object_15 as any).geometry}
             material={materials.Body_FRONT_2664}
           />
           <mesh
             castShadow
             receiveShadow
-            geometry={nodes.Object_16.geometry}
+            geometry={(nodes.Object_16 as any).geometry}
             material={materials.Body_FRONT_2664}
           />
           <mesh
             castShadow
             receiveShadow
-            geometry={nodes.Object_18.geometry}
+            geometry={(nodes.Object_18 as any).geometry}
             material={materials.Sleeves_FRONT_2669}
           />
           <mesh
             castShadow
             receiveShadow
-            geometry={nodes.Object_20.geometry}
+            geometry={(nodes.Object_20 as any).geometry}
             material={materials.Sleeves_FRONT_2669}
           />
         </group>
@@ -137,11 +142,16 @@ function Backdrop() {
 }
 
 function CameraRig({ children }: { children: React.ReactNode }) {
-  const groupRef = useRef(null);
+  const groupRef = useRef<Group<Object3DEventMap> | null>(null);
 
-  // useFrame((state, delta) => {
-  //   // console.log(state);
-  // });
+  useFrame((state, delta) => {
+    easing.dampE(
+      groupRef.current!.rotation,
+      [state.pointer.y / 5, -state.pointer.x / 2, 0],
+      0.25,
+      delta,
+    );
+  });
 
   return <group ref={groupRef}>{children}</group>;
 }
