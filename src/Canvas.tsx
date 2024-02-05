@@ -1,7 +1,5 @@
 import React, { useRef } from 'react';
 
-// course first and second page text
-// course detail youtube
 import {
   AccumulativeShadows,
   Center,
@@ -14,7 +12,7 @@ import { Canvas, useFrame } from '@react-three/fiber';
 import { easing } from 'maath';
 import { Group, Object3DEventMap, Vector3 } from 'three';
 
-const defaultPosition = new Vector3(0, 0, 3);
+const defaultPosition = new Vector3(0, 0, 2);
 export default function AppCanvas({ position = defaultPosition, fov = 35 }) {
   return (
     <Canvas

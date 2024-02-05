@@ -39,6 +39,7 @@ module.exports = {
     'react/no-unknown-property': ['off'],
     'no-use-before-define': 'off',
     'react/prop-types': 'off',
+    'react/no-unescaped-entities': 0,
     '@typescript-eslint/no-explicit-any': 'off',
     'react/jsx-props-no-spreading': 'off',
     'import/order': [
