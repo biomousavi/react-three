@@ -5,50 +5,65 @@ import {
   AiOutlineHighlight,
   AiOutlineShop,
 } from 'react-icons/ai';
+import { useSnapshot } from 'valtio';
+
+import state from './store.ts';
 
 export default function Overlay() {
-  return <Customizer />;
-}
+  const snap = useSnapshot(state);
 
-export function Intro() {
   return (
     <div className="container mx-auto px-3 absolute z-10 top-0  w-full h-full">
-      <header className="flex py-12 justify-between">
-        <a href="https://github.com/biomousavi">
-          <AiOutlineGithub size="3rem" aria-label="Github" />
-        </a>
-        <AiOutlineShop size="3rem" />
-      </header>
+      {snap.intro && (
+        <header className="flex py-12 justify-between">
+          <a href="https://github.com/biomousavi">
+            <AiOutlineGithub size="3rem" aria-label="Github" />
+          </a>
+          <AiOutlineShop size="3rem" />
+        </header>
+      )}
 
-      <section key="main" className="flex flex-col lg:flex-row">
-        <div>
-          <h1 className="text-[16vw] tracking-[-2px] lg:tracking-[-6px] italic w-1/3 leading-[15vw] font-black">
-            LET'S DO IT.
-          </h1>
-        </div>
-
-        <div className="self-end lg:absolute left-[30vw] lg:w-1/2">
-          <p className="text-sm lg:text-2xl my-4 lg:my-14">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Eos dolorum
-            quo alias qui commodi veritatis a
-            <strong> quaerat soluta necessitatibus </strong>
-            asperiores.
-          </p>
-
-          <button
-            className="bg-black hover:shadow-2xl hover:scale-105 transition-all duration-500  text-white flex py-2 px-5 items-center  rounded-xl"
-            type="button"
-          >
-            <span className="mr-2 font-bold">CUSTOMIZE IT</span>
-            <AiOutlineHighlight size="3rem" />
-          </button>
-        </div>
-      </section>
+      {snap.intro ? <Intro /> : <Customizer />}
     </div>
   );
 }
 
+function Intro() {
+  return (
+    <section key="main" className="flex flex-col lg:flex-row ">
+      <div>
+        <h1 className="text-[20vw] md:text-[15vw] tracking-[-2px] lg:tracking-[-6px] italic w-1/3 leading-[15vw] md:leading-[12vw] font-black">
+          LET'S DO IT.
+        </h1>
+      </div>
+
+      <div className="self-end lg:absolute right-0 lg:w-1/2  mt-24">
+        <p className="text-sm lg:text-2xl my-4 lg:my-14">
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Eos dolorum
+          quo alias qui commodi veritatis a
+          <strong> quaerat soluta necessitatibus </strong>
+          asperiores.
+        </p>
+
+        <button
+          className="bg-black hover:shadow-2xl  hover:scale-105 transition-all duration-500  text-white flex py-2 px-5 items-center  rounded-xl mt-24"
+          type="button"
+          onClick={() => {
+            state.intro = false;
+          }}
+          aria-hidden="true"
+        >
+          <span className="mr-2 font-bold">CUSTOMIZE IT</span>
+          <AiOutlineHighlight size="3rem" />
+        </button>
+      </div>
+    </section>
+  );
+}
+
 function Customizer() {
+  const snap = useSnapshot(state);
+
   const colors: string[] = [
     '#ccc',
     '#EFBD4E',
@@ -64,6 +79,10 @@ function Customizer() {
         <div className=" absolute flex gap-2 bottom-5 mb-5">
           {colors.map((color) => (
             <div
+              onClick={() => {
+                state.selectedColor = color;
+              }}
+              aria-hidden="true"
               className="w-8 h-8 rounded-full border-2 border-solid border-white transition-all hover:scale-110 hover:cursor-pointer"
               key={color}
               style={{ background: color }}
@@ -87,19 +106,21 @@ function Customizer() {
       </div>
 
       <button
-        className="bg-black absolute p-3 text-white top-10 left-10"
+        className=" absolute p-3 text-white top-10 left-10 flex gap-2 transition-colors"
+        style={{ backgroundColor: snap.selectedColor }}
         type="button"
       >
         Download
-        <AiFillCamera size="1.3" />
+        <AiFillCamera size="1.3em" />
       </button>
 
       <button
-        className="bg-black absolute p-3 text-white top-10 right-10"
+        className=" absolute p-3 text-white top-10 right-10 flex gap-2 transition-colors"
+        style={{ backgroundColor: snap.selectedColor }}
         type="button"
       >
         GO BACK
-        <AiOutlineArrowLeft size="1.3" />
+        <AiOutlineArrowLeft size="1.3em" />
       </button>
     </section>
   );

@@ -11,6 +11,9 @@ import {
 import { Canvas, useFrame } from '@react-three/fiber';
 import { easing } from 'maath';
 import { Group, Object3DEventMap, Vector3 } from 'three';
+import { useSnapshot } from 'valtio';
+
+import state from './store.ts';
 
 const defaultPosition = new Vector3(0, 0, 2);
 export default function AppCanvas({ position = defaultPosition, fov = 35 }) {
@@ -38,7 +41,25 @@ export default function AppCanvas({ position = defaultPosition, fov = 35 }) {
 }
 
 function Shirt(props: any) {
+  const snap = useSnapshot(state);
   const { nodes, materials } = useGLTF('/t_shirt.glb');
+
+  // easing for color transition
+  useFrame((_, delta) => {
+    easing.dampC(
+      (materials.Body_FRONT_2664 as any).color,
+      snap.selectedColor,
+      0.25,
+      delta,
+    );
+    easing.dampC(
+      (materials.Sleeves_FRONT_2669 as any).color,
+      snap.selectedColor,
+      0.25,
+      delta,
+    );
+  });
+
   return (
     <group {...props} dispose={null}>
       <group rotation={[-1.661, 0.003, 0]} position={[0, -0.3, 0]}>
@@ -112,8 +133,20 @@ function Shirt(props: any) {
 useGLTF.preload('/t_shirt.glb');
 
 function Backdrop() {
+  const shadows = useRef<any>();
+  const snap = useSnapshot(state);
+
+  useFrame((_, delta) => {
+    easing.dampC(
+      (shadows.current as any).getMesh().material.color,
+      snap.selectedColor,
+      0.25,
+      delta,
+    );
+  });
   return (
     <AccumulativeShadows
+      ref={shadows}
       temporal
       frames={60}
       alphaTest={0.25}
@@ -142,10 +175,10 @@ function Backdrop() {
 function CameraRig({ children }: { children: React.ReactNode }) {
   const groupRef = useRef<Group<Object3DEventMap> | null>(null);
 
-  useFrame((state, delta) => {
+  useFrame((frameState, delta) => {
     easing.dampE(
       groupRef.current!.rotation,
-      [state.pointer.y / 5, -state.pointer.x / 2, 0],
+      [frameState.pointer.y / 5, -frameState.pointer.x / 2, 0],
       0.25,
       delta,
     );
