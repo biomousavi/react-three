@@ -1,14 +1,16 @@
 import {
+  AiFillCamera,
+  AiOutlineArrowLeft,
   AiOutlineGithub,
   AiOutlineHighlight,
   AiOutlineShop,
 } from 'react-icons/ai';
 
 export default function Overlay() {
-  return <Intro />;
+  return <Customizer />;
 }
 
-function Intro() {
+export function Intro() {
   return (
     <div className="container mx-auto px-3 absolute z-10 top-0  w-full h-full">
       <header className="flex py-12 justify-between">
@@ -43,5 +45,62 @@ function Intro() {
         </div>
       </section>
     </div>
+  );
+}
+
+function Customizer() {
+  const colors: string[] = [
+    '#ccc',
+    '#EFBD4E',
+    '#80C670',
+    '#726DE8',
+    '#EF674E',
+    '#653934',
+  ];
+  const decals = ['react', 'no', 'leaf'];
+  return (
+    <section key="custom">
+      <div className="flex justify-end flex-col items-center h-full w-full mb-6">
+        <div className=" absolute flex gap-2 bottom-5 mb-5">
+          {colors.map((color) => (
+            <div
+              className="w-8 h-8 rounded-full border-2 border-solid border-white transition-all hover:scale-110 hover:cursor-pointer"
+              key={color}
+              style={{ background: color }}
+            />
+          ))}
+        </div>
+      </div>
+
+      <div className="absolute md:left-12 left-5 bottom-12">
+        <div className="flex gap-5 flex-col md:flex-row">
+          {decals.map((decal) => (
+            <div key={decal}>
+              <img
+                src={`${decal}.png`}
+                alt="brand"
+                className="w-6 saturate-0 invert-[1] brightness-200 transition-all duration-500 hover:scale-125 hover:cursor-pointer hover:filter-none"
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <button
+        className="bg-black absolute p-3 text-white top-10 left-10"
+        type="button"
+      >
+        Download
+        <AiFillCamera size="1.3" />
+      </button>
+
+      <button
+        className="bg-black absolute p-3 text-white top-10 right-10"
+        type="button"
+      >
+        GO BACK
+        <AiOutlineArrowLeft size="1.3" />
+      </button>
+    </section>
   );
 }
