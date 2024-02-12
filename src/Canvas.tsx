@@ -3,14 +3,18 @@ import React, { useRef } from 'react';
 import {
   AccumulativeShadows,
   Center,
+  Decal,
   Environment,
   // OrbitControls,
   RandomizedLight,
   useGLTF,
+  useTexture,
 } from '@react-three/drei';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { easing } from 'maath';
+import * as THREE from 'three';
 import { Group, Object3DEventMap, Vector3 } from 'three';
+import { GLTF } from 'three-stdlib';
 import { useSnapshot } from 'valtio';
 
 import state from './store.ts';
@@ -19,6 +23,7 @@ const defaultPosition = new Vector3(0, 0, 2);
 export default function AppCanvas({ position = defaultPosition, fov = 35 }) {
   return (
     <Canvas
+      gl={{ preserveDrawingBuffer: true }}
       shadows
       style={{ height: '100vh' }}
       eventSource={document.getElementById('root')!}
@@ -40,20 +45,25 @@ export default function AppCanvas({ position = defaultPosition, fov = 35 }) {
   );
 }
 
-function Shirt(props: any) {
+type GLTFResult = GLTF & {
+  nodes: {
+    T_Shirt_male: THREE.Mesh;
+  };
+  materials: {
+    lambert1: THREE.MeshStandardMaterial;
+  };
+};
+
+function Shirt(props: JSX.IntrinsicElements['group']) {
   const snap = useSnapshot(state);
-  const { nodes, materials } = useGLTF('/t_shirt.glb');
+  const { nodes, materials } = useGLTF('/shirt.glb') as GLTFResult;
+
+  const texture = useTexture(`/${snap.selectedDecal}.png`);
 
   // easing for color transition
   useFrame((_, delta) => {
     easing.dampC(
-      (materials.Body_FRONT_2664 as any).color,
-      snap.selectedColor,
-      0.25,
-      delta,
-    );
-    easing.dampC(
-      (materials.Sleeves_FRONT_2669 as any).color,
+      (materials.lambert1 as any).color,
       snap.selectedColor,
       0.25,
       delta,
@@ -62,75 +72,22 @@ function Shirt(props: any) {
 
   return (
     <group {...props} dispose={null}>
-      <group rotation={[-1.661, 0.003, 0]} position={[0, -0.3, 0]}>
-        <group rotation={[Math.PI / 2, 0, 0]}>
-          <mesh
-            castShadow
-            receiveShadow
-            geometry={(nodes.Object_6 as any).geometry}
-            material={materials.Body_FRONT_2664}
-          />
-          <mesh
-            castShadow
-            receiveShadow
-            geometry={(nodes.Object_8 as any).geometry}
-            material={materials.Body_FRONT_2664}
-          />
-          <mesh
-            castShadow
-            receiveShadow
-            geometry={(nodes.Object_10 as any).geometry}
-            material={materials.Body_FRONT_2664}
-          />
-          <mesh
-            castShadow
-            receiveShadow
-            geometry={(nodes.Object_11 as any).geometry}
-            material={materials.Body_FRONT_2664}
-          />
-          <mesh
-            castShadow
-            receiveShadow
-            geometry={(nodes.Object_12 as any).geometry}
-            material={materials.Body_FRONT_2664}
-          />
-          <mesh
-            castShadow
-            receiveShadow
-            geometry={(nodes.Object_14 as any).geometry}
-            material={materials.Body_FRONT_2664}
-          />
-          <mesh
-            castShadow
-            receiveShadow
-            geometry={(nodes.Object_15 as any).geometry}
-            material={materials.Body_FRONT_2664}
-          />
-          <mesh
-            castShadow
-            receiveShadow
-            geometry={(nodes.Object_16 as any).geometry}
-            material={materials.Body_FRONT_2664}
-          />
-          <mesh
-            castShadow
-            receiveShadow
-            geometry={(nodes.Object_18 as any).geometry}
-            material={materials.Sleeves_FRONT_2669}
-          />
-          <mesh
-            castShadow
-            receiveShadow
-            geometry={(nodes.Object_20 as any).geometry}
-            material={materials.Sleeves_FRONT_2669}
-          />
-        </group>
-      </group>
+      <mesh
+        castShadow
+        receiveShadow
+        geometry={nodes.T_Shirt_male.geometry}
+        material={materials.lambert1}
+      >
+        <Decal
+          position={[0, 0.04, 0.15]}
+          rotation={[0, 0, 0]}
+          scale={0.15}
+          map={texture}
+        />
+      </mesh>
     </group>
   );
 }
-
-useGLTF.preload('/t_shirt.glb');
 
 function Backdrop() {
   const shadows = useRef<any>();
@@ -152,7 +109,7 @@ function Backdrop() {
       alphaTest={0.25}
       scale={10}
       rotation={[Math.PI / 2, 0, 0]}
-      position={[0, 1, -0.4]}
+      position={[0, 0, -0.14]}
     >
       <RandomizedLight
         amount={4}
@@ -186,3 +143,6 @@ function CameraRig({ children }: { children: React.ReactNode }) {
 
   return <group ref={groupRef}>{children}</group>;
 }
+
+useGLTF.preload('/shirt.glb');
+['react', 'no', 'leaf'].forEach(useTexture.preload);

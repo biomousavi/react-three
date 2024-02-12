@@ -32,7 +32,7 @@ function Intro() {
   return (
     <section key="main" className="flex flex-col lg:flex-row ">
       <div>
-        <h1 className="text-[20vw] md:text-[15vw] tracking-[-2px] lg:tracking-[-6px] italic w-1/3 leading-[15vw] md:leading-[12vw] font-black">
+        <h1 className="text-[20vw] md:text-[15vw] tracking-[-2px] lg:tracking-[-6px] italic w-1/3 leading-[15vw] md:leading-[12vw] font-black mix-blend-difference">
           LET'S DO IT.
         </h1>
       </div>
@@ -94,7 +94,13 @@ function Customizer() {
       <div className="absolute md:left-12 left-5 bottom-12">
         <div className="flex gap-5 flex-col md:flex-row">
           {decals.map((decal) => (
-            <div key={decal}>
+            <div
+              key={decal}
+              onClick={() => {
+                state.selectedDecal = decal;
+              }}
+              aria-hidden="true"
+            >
               <img
                 src={`${decal}.png`}
                 alt="brand"
@@ -109,6 +115,20 @@ function Customizer() {
         className=" absolute p-3 text-white top-10 left-10 flex gap-2 transition-colors"
         style={{ backgroundColor: snap.selectedColor }}
         type="button"
+        onClick={() => {
+          const link = document.createElement('a');
+          link.setAttribute('download', 'canvas.png');
+          link.setAttribute(
+            'href',
+            document
+              .querySelector('canvas')!
+              .toDataURL('image/png')
+              .replace('image/png', 'image/octet-stream')!,
+          );
+
+          link.click();
+        }}
+        aria-hidden="true"
       >
         Download
         <AiFillCamera size="1.3em" />
@@ -117,6 +137,10 @@ function Customizer() {
       <button
         className=" absolute p-3 text-white top-10 right-10 flex gap-2 transition-colors"
         style={{ backgroundColor: snap.selectedColor }}
+        onClick={() => {
+          state.intro = true;
+        }}
+        aria-hidden="true"
         type="button"
       >
         GO BACK
