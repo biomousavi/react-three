@@ -5,7 +5,7 @@ import {
   Center,
   Decal,
   Environment,
-  // OrbitControls,
+  PresentationControls,
   RandomizedLight,
   useGLTF,
   useTexture,
@@ -34,13 +34,12 @@ export default function AppCanvas({ position = defaultPosition, fov = 35 }) {
       <Environment preset="city" />
       <CameraRig>
         <Center>
-          <Shirt />
-          <Backdrop />
+          <PresentationControls enabled global speed={0.7} snap>
+            <Shirt />
+            <Backdrop />
+          </PresentationControls>
         </Center>
       </CameraRig>
-
-      {/* adding mouse drag controll */}
-      {/* <OrbitControls /> */}
     </Canvas>
   );
 }
